@@ -1,4 +1,6 @@
 import 'package:cutom_world/bottom_nav_btn.dart';
+import 'package:cutom_world/clipper.dart';
+import 'package:cutom_world/constants.dart';
 import 'package:cutom_world/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:iconly/iconly.dart';
@@ -58,55 +60,140 @@ class _FinalViewState extends State<FinalView> {
           height: AppSizes.blockSizeHorizontal * 18,
           decoration: BoxDecoration(
               color: Colors.grey[900], borderRadius: BorderRadius.circular(30)),
-          child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(width: AppSizes.blockSizeHorizontal * 2),
-                BottomNavBtn(
-                  icon: IconlyLight.home,
-                  currentIndex: _currentIndex,
-                  index: 0,
-                  onTap: (val) {
-                    _currentIndex = val;
-                    setState(() {});
-                  },
+          child: Stack(
+            children: [
+              /// List of bottom navigation bar icons
+              Positioned(
+                bottom: 0,
+                top: 0,
+                left: AppSizes.blockSizeHorizontal * 1,
+                right: AppSizes.blockSizeHorizontal * 1,
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(width: AppSizes.blockSizeHorizontal * 2),
+                      BottomNavBtn(
+                        icon: IconlyLight.home,
+                        currentIndex: _currentIndex,
+                        index: 0,
+                        onTap: (val) {
+                          _currentIndex = val;
+                          setState(() {});
+                        },
+                      ),
+                      BottomNavBtn(
+                          icon: IconlyLight.search,
+                          currentIndex: _currentIndex,
+                          index: 1,
+                          onTap: (val) {
+                            _currentIndex = val;
+                            setState(() {});
+                          }),
+                      BottomNavBtn(
+                          icon: IconlyLight.category,
+                          currentIndex: _currentIndex,
+                          index: 2,
+                          onTap: (val) {
+                            _currentIndex = val;
+                            setState(() {});
+                          }),
+                      BottomNavBtn(
+                          icon: IconlyLight.setting,
+                          currentIndex: _currentIndex,
+                          index: 3,
+                          onTap: (val) {
+                            _currentIndex = val;
+                            setState(() {});
+                          }),
+                      BottomNavBtn(
+                          icon: IconlyLight.profile,
+                          currentIndex: _currentIndex,
+                          index: 4,
+                          onTap: (val) {
+                            _currentIndex = val;
+                            setState(() {});
+                          }),
+                      SizedBox(width: AppSizes.blockSizeHorizontal * 2)
+                    ]),
+              ),
+
+              /// Animated indicator for showing selected icon item
+              /// Option 1
+              AnimatedPositioned(
+                left: _currentIndex == 0 ? 24 : (((_currentIndex) * 66) + 24),
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.decelerate,
+                child: Column(
+                  children: [
+                    Container(
+                      height: AppSizes.blockSizeHorizontal * 1,
+                      width: AppSizes.blockSizeHorizontal * 11,
+                      decoration: BoxDecoration(
+                          color: Colors.yellow,
+                          borderRadius: BorderRadius.circular(10)),
+                    ),
+                    ClipPath(
+                      clipper: MyCustomClipper(),
+                      child: Container(
+                        height: AppSizes.blockSizeHorizontal * 15,
+                        width: AppSizes.blockSizeHorizontal * 12,
+                        decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                                colors: gradient,
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter)),
+                      ),
+                    )
+                  ],
                 ),
-                BottomNavBtn(
-                    icon: IconlyLight.search,
-                    currentIndex: _currentIndex,
-                    index: 1,
-                    onTap: (val) {
-                      _currentIndex = val;
-                      setState(() {});
-                    }),
-                BottomNavBtn(
-                    icon: IconlyLight.category,
-                    currentIndex: _currentIndex,
-                    index: 2,
-                    onTap: (val) {
-                      _currentIndex = val;
-                      setState(() {});
-                    }),
-                BottomNavBtn(
-                    icon: IconlyLight.setting,
-                    currentIndex: _currentIndex,
-                    index: 3,
-                    onTap: (val) {
-                      _currentIndex = val;
-                      setState(() {});
-                    }),
-                BottomNavBtn(
-                    icon: IconlyLight.profile,
-                    currentIndex: _currentIndex,
-                    index: 4,
-                    onTap: (val) {
-                      _currentIndex = val;
-                      setState(() {});
-                    }),
-                SizedBox(width: AppSizes.blockSizeHorizontal * 2)
-              ]),
+              ),
+
+              /// Option 2
+              // Positioned(
+              //   // left: _currentIndex == 0 ? 24 : (((_currentIndex) * 66) + 24),
+              //   // duration: const Duration(milliseconds: 300),
+              //   // curve: Curves.decelerate,
+              //   child: Row(
+              //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //     crossAxisAlignment: CrossAxisAlignment.center,
+              //     children: [
+              //       const SizedBox(width: 3),
+              //       IndicatorW(currentIndex: _currentIndex, index: 0),
+              //       IndicatorW(currentIndex: _currentIndex, index: 1),
+              //       IndicatorW(currentIndex: _currentIndex, index: 2),
+              //       IndicatorW(currentIndex: _currentIndex, index: 3),
+              //       IndicatorW(currentIndex: _currentIndex, index: 4),
+              //       const SizedBox(width: 3)
+              //     ],
+              //   ),
+              // )
+            ],
+          ),
         ),
+      ),
+    );
+  }
+}
+
+class IndicatorW extends StatelessWidget {
+  const IndicatorW(
+      {super.key, required this.currentIndex, required this.index});
+
+  final int currentIndex;
+  final int index;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedOpacity(
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.decelerate,
+      opacity: (currentIndex == index) ? 1 : 0,
+      child: Container(
+        height: AppSizes.blockSizeHorizontal * 1,
+        width: AppSizes.blockSizeHorizontal * 11,
+        decoration: BoxDecoration(
+            color: Colors.yellow, borderRadius: BorderRadius.circular(10)),
       ),
     );
   }
