@@ -14,6 +14,24 @@ class FinalView extends StatefulWidget {
 
 class _FinalViewState extends State<FinalView> {
   int _currentIndex = 0, index = 0;
+  late final PageController controller;
+
+  @override
+  void initState() {
+    controller = PageController(initialPage: _currentIndex);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  void animateToPage(int page) {
+    controller.animateToPage(page,
+        duration: const Duration(milliseconds: 300), curve: Curves.decelerate);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,14 +49,26 @@ class _FinalViewState extends State<FinalView> {
           bottom: false,
           child: Stack(
             children: [
+              /// Main Pages
+              Positioned.fill(
+                child: PageView(
+                  controller: controller,
+                  onPageChanged: (val) {
+                    _currentIndex = val;
+                    setState(() {});
+                  },
+                  children: screens,
+                ),
+              ),
+
               /// For testing purposes we have this
               /// empty container. later this will be replaced
               /// with pageview to allow to have the ability to
               /// change pages through it
-              Positioned.fill(
-                  child: Container(
-                color: Colors.deepPurpleAccent,
-              )),
+              // Positioned.fill(
+              //     child: Container(
+              //   color: Colors.deepPurpleAccent,
+              // )),
 
               Positioned(
                   bottom: 0, right: 0, left: 0, child: _buildBottomNavBar())
@@ -78,6 +108,9 @@ class _FinalViewState extends State<FinalView> {
                         currentIndex: _currentIndex,
                         index: 0,
                         onTap: (val) {
+                          if (_currentIndex != val) {
+                            animateToPage(val);
+                          }
                           _currentIndex = val;
                           setState(() {});
                         },
@@ -87,6 +120,9 @@ class _FinalViewState extends State<FinalView> {
                           currentIndex: _currentIndex,
                           index: 1,
                           onTap: (val) {
+                            if (_currentIndex != val) {
+                              animateToPage(val);
+                            }
                             _currentIndex = val;
                             setState(() {});
                           }),
@@ -95,6 +131,9 @@ class _FinalViewState extends State<FinalView> {
                           currentIndex: _currentIndex,
                           index: 2,
                           onTap: (val) {
+                            if (_currentIndex != val) {
+                              animateToPage(val);
+                            }
                             _currentIndex = val;
                             setState(() {});
                           }),
@@ -103,6 +142,9 @@ class _FinalViewState extends State<FinalView> {
                           currentIndex: _currentIndex,
                           index: 3,
                           onTap: (val) {
+                            if (_currentIndex != val) {
+                              animateToPage(val);
+                            }
                             _currentIndex = val;
                             setState(() {});
                           }),
@@ -111,6 +153,9 @@ class _FinalViewState extends State<FinalView> {
                           currentIndex: _currentIndex,
                           index: 4,
                           onTap: (val) {
+                            if (_currentIndex != val) {
+                              animateToPage(val);
+                            }
                             _currentIndex = val;
                             setState(() {});
                           }),
@@ -126,6 +171,7 @@ class _FinalViewState extends State<FinalView> {
                 curve: Curves.decelerate,
                 child: Column(
                   children: [
+                    /// Top Side Indicator
                     Container(
                       height: AppSizes.blockSizeHorizontal * 1,
                       width: AppSizes.blockSizeHorizontal * 11,
@@ -133,6 +179,8 @@ class _FinalViewState extends State<FinalView> {
                           color: Colors.yellow,
                           borderRadius: BorderRadius.circular(10)),
                     ),
+
+                    /// Clipper
                     ClipPath(
                       clipper: MyCustomClipper(),
                       child: Container(
